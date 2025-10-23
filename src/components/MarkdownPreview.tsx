@@ -15,9 +15,13 @@ const DynamicMermaid = dynamic(() => import("./DynamicMermaid"), {
 
 interface MarkdownPreviewProps {
     html: string;
+    previewStyle: "github" | "default";
 }
 
-export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
+export default function MarkdownPreview({
+    html,
+    previewStyle,
+}: MarkdownPreviewProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const rootsRef = useRef<
         Array<ReturnType<typeof import("react-dom/client").createRoot>>
@@ -121,7 +125,9 @@ export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
     return (
         <div
             ref={containerRef}
-            className="prose prose-slate dark:prose-invert max-w-none"
+            className={`prose max-w-none prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-p:text-gray-900 dark:prose-p:text-gray-300 prose-li:text-gray-900 dark:prose-li:text-gray-300 prose-headings:font-bold prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-code:text-pink-600 dark:prose-code:text-pink-400 prose-strong:text-gray-900 dark:prose-strong:text-gray-100 dark:prose-invert ${
+                previewStyle === "github" ? "" : ""
+            }`}
         />
     );
 }
