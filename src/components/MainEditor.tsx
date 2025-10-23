@@ -1,13 +1,17 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
+import { EditorView } from "@codemirror/view";
 import MarkdownIt from "markdown-it";
 
 export default function MainEditor() {
     const [value, setValue] = useState("# Hello Markdown\n\nStart editing...");
     const [sanitizedHTML, setSanitizedHTML] = useState("");
+    const editorViewRef = useRef<EditorView | null>(null);
+    const previewRef = useRef<HTMLDivElement>(null);
+    const syncLockRef = useRef<"editor" | "preview" | null>(null);
 
     const md = useMemo(() => {
         return new MarkdownIt({
@@ -29,6 +33,79 @@ export default function MainEditor() {
         sanitize();
     }, [value, md]);
 
+    const scrollExtension = useMemo(() => {
+        return EditorView.domEventHandlers({
+            scroll: (event, view) => {
+                if (syncLockRef.current === "preview") return;
+
+                syncLockRef.current = "editor";
+
+                const previewDiv = previewRef.current;
+                if (!previewDiv) {
+                    syncLockRef.current = null;
+                    return;
+                }
+
+                const scroller = view.scrollDOM;
+                const editorScrollHeight =
+                    scroller.scrollHeight - scroller.clientHeight;
+                const previewScrollHeight =
+                    previewDiv.scrollHeight - previewDiv.clientHeight;
+
+                if (editorScrollHeight > 0 && previewScrollHeight > 0) {
+                    const ratio = scroller.scrollTop / editorScrollHeight;
+                    previewDiv.scrollTop = ratio * previewScrollHeight;
+                } else if (scroller.scrollTop === 0) {
+                    previewDiv.scrollTop = 0;
+                }
+
+                requestAnimationFrame(() => {
+                    syncLockRef.current = null;
+                });
+            },
+        });
+    }, []);
+
+    useEffect(() => {
+        const previewDiv = previewRef.current;
+        if (!previewDiv) return;
+
+        const handlePreviewScroll = () => {
+            if (syncLockRef.current === "editor") return;
+
+            syncLockRef.current = "preview";
+
+            const view = editorViewRef.current;
+            if (!view) {
+                syncLockRef.current = null;
+                return;
+            }
+
+            const scroller = view.scrollDOM;
+            const editorScrollHeight =
+                scroller.scrollHeight - scroller.clientHeight;
+            const previewScrollHeight =
+                previewDiv.scrollHeight - previewDiv.clientHeight;
+
+            if (previewScrollHeight > 0 && editorScrollHeight > 0) {
+                const ratio = previewDiv.scrollTop / previewScrollHeight;
+                scroller.scrollTop = ratio * editorScrollHeight;
+            } else if (previewDiv.scrollTop === 0) {
+                scroller.scrollTop = 0;
+            }
+
+            requestAnimationFrame(() => {
+                syncLockRef.current = null;
+            });
+        };
+
+        previewDiv.addEventListener("scroll", handlePreviewScroll);
+
+        return () => {
+            previewDiv.removeEventListener("scroll", handlePreviewScroll);
+        };
+    }, []);
+
     return (
         <div className="flex h-screen w-full">
             <div className="w-1/2 border-r border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900">
@@ -36,21 +113,25 @@ export default function MainEditor() {
                     <CodeMirror
                         value={value}
                         height="100vh"
-                        extensions={[markdown()]}
+                        extensions={[markdown(), scrollExtension]}
                         onChange={(val) => setValue(val)}
+                        onCreateEditor={(view) => {
+                            editorViewRef.current = view;
+                        }}
                         theme="light"
                         className="h-full"
                     />
                 </div>
             </div>
 
-            <div className="w-1/2 bg-gray-50 dark:bg-gray-800">
-                <div className="h-full overflow-auto p-6">
-                    <div
-                        className="prose prose-slate dark:prose-invert max-w-none"
-                        dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
-                    />
-                </div>
+            <div
+                ref={previewRef}
+                className="w-1/2 bg-gray-50 dark:bg-gray-800 h-screen overflow-auto p-6"
+            >
+                <div
+                    className="prose prose-slate dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
+                />
             </div>
         </div>
     );
