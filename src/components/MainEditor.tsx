@@ -6,9 +6,33 @@ import { markdown } from "@codemirror/lang-markdown";
 import { EditorView } from "@codemirror/view";
 import { githubLight, githubDark } from "@uiw/codemirror-theme-github";
 import MarkdownIt from "markdown-it";
+import MarkdownPreview from "./MarkdownPreview";
 
 export default function MainEditor() {
-    const [value, setValue] = useState("# Hello Markdown\n\nStart editing...");
+    const [value, setValue] = useState(`# Hello Markdown
+
+Start editing...
+
+## Math Example
+
+Inline math: \`$E = mc^2$\`
+
+Block math:
+
+\`\`\`
+$$
+\\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}
+$$
+\`\`\`
+
+## Mermaid Diagram
+
+\`\`\`mermaid
+graph TD
+    A[Start] --> B[Process]
+    B --> C[End]
+\`\`\`
+`);
     const [sanitizedHTML, setSanitizedHTML] = useState("");
     const [isDark, setIsDark] = useState(false);
     const editorViewRef = useRef<EditorView | null>(null);
@@ -126,31 +150,26 @@ export default function MainEditor() {
     }, []);
 
     return (
-        <div className="flex h-screen w-full">
-            <div className="w-1/2 border-r border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900">
-                <div className="h-full overflow-auto">
-                    <CodeMirror
-                        value={value}
-                        height="100vh"
-                        extensions={[markdown(), scrollExtension]}
-                        onChange={(val) => setValue(val)}
-                        onCreateEditor={(view) => {
-                            editorViewRef.current = view;
-                        }}
-                        theme={isDark ? githubDark : githubLight}
-                        className="h-full"
-                    />
-                </div>
+        <div className="flex h-screen w-full overflow-hidden">
+            <div className="w-1/2 border-r border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 h-full overflow-hidden">
+                <CodeMirror
+                    value={value}
+                    height="100%"
+                    extensions={[markdown(), scrollExtension]}
+                    onChange={(val) => setValue(val)}
+                    onCreateEditor={(view) => {
+                        editorViewRef.current = view;
+                    }}
+                    theme={isDark ? githubDark : githubLight}
+                    className="h-full"
+                />
             </div>
 
             <div
                 ref={previewRef}
-                className="w-1/2 bg-gray-50 dark:bg-gray-800 h-screen overflow-auto p-6"
+                className="w-1/2 bg-gray-50 dark:bg-gray-800 h-full overflow-auto p-6"
             >
-                <div
-                    className="prose prose-slate dark:prose-invert max-w-none"
-                    dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
-                />
+                <MarkdownPreview html={sanitizedHTML} />
             </div>
         </div>
     );
