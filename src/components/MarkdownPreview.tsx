@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const DynamicKaTeX = dynamic(() => import("./DynamicKaTeX"), {
     ssr: false,
@@ -26,6 +27,7 @@ export default function MarkdownPreview({
     const rootsRef = useRef<
         Array<ReturnType<typeof import("react-dom/client").createRoot>>
     >([]);
+    const { theme } = useTheme();
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -110,7 +112,9 @@ export default function MarkdownPreview({
             import("react-dom/client").then(({ createRoot }) => {
                 const reactRoot = createRoot(root);
                 rootsRef.current.push(reactRoot);
-                reactRoot.render(<DynamicMermaid chart={chart} />);
+                reactRoot.render(
+                    <DynamicMermaid chart={chart} theme={theme} />
+                );
             });
         });
 
@@ -120,7 +124,7 @@ export default function MarkdownPreview({
             });
             rootsRef.current = [];
         };
-    }, [html]);
+    }, [html, theme]);
 
     return (
         <div
