@@ -4,11 +4,13 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
 import { EditorView } from "@codemirror/view";
+import { githubLight, githubDark } from "@uiw/codemirror-theme-github";
 import MarkdownIt from "markdown-it";
 
 export default function MainEditor() {
     const [value, setValue] = useState("# Hello Markdown\n\nStart editing...");
     const [sanitizedHTML, setSanitizedHTML] = useState("");
+    const [isDark, setIsDark] = useState(false);
     const editorViewRef = useRef<EditorView | null>(null);
     const previewRef = useRef<HTMLDivElement>(null);
     const syncLockRef = useRef<"editor" | "preview" | null>(null);
@@ -20,6 +22,23 @@ export default function MainEditor() {
             typographer: true,
             breaks: true,
         });
+    }, []);
+
+    useEffect(() => {
+        const checkDarkMode = () => {
+            const isDarkMode = window.matchMedia(
+                "(prefers-color-scheme: dark)"
+            ).matches;
+            setIsDark(isDarkMode);
+        };
+
+        checkDarkMode();
+
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+        const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+        mediaQuery.addEventListener("change", handler);
+
+        return () => mediaQuery.removeEventListener("change", handler);
     }, []);
 
     useEffect(() => {
@@ -118,7 +137,7 @@ export default function MainEditor() {
                         onCreateEditor={(view) => {
                             editorViewRef.current = view;
                         }}
-                        theme="light"
+                        theme={isDark ? githubDark : githubLight}
                         className="h-full"
                     />
                 </div>

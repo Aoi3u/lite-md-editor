@@ -13,6 +13,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "@types/dompurify": "^3.2.0",
     "@types/markdown-it": "^14.1.2",
+    "@uiw/codemirror-theme-github": "^4.25.2",
     "@uiw/react-codemirror": "^4.25.2",
     "dompurify": "^3.3.0",
     "markdown-it": "^14.1.0",
