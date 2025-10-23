@@ -19,6 +19,9 @@ interface MarkdownPreviewProps {
 
 export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
     const containerRef = useRef<HTMLDivElement>(null);
+    const rootsRef = useRef<
+        Array<ReturnType<typeof import("react-dom/client").createRoot>>
+    >([]);
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -71,6 +74,11 @@ export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
     useEffect(() => {
         if (!containerRef.current) return;
 
+        rootsRef.current.forEach((root) => {
+            root.unmount();
+        });
+        rootsRef.current = [];
+
         const mathElements =
             containerRef.current.querySelectorAll("[data-math]");
         mathElements.forEach((el) => {
@@ -80,7 +88,9 @@ export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
             el.replaceWith(root);
 
             import("react-dom/client").then(({ createRoot }) => {
-                createRoot(root).render(
+                const reactRoot = createRoot(root);
+                rootsRef.current.push(reactRoot);
+                reactRoot.render(
                     <DynamicKaTeX math={math} displayMode={displayMode} />
                 );
             });
@@ -94,9 +104,18 @@ export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
             el.replaceWith(root);
 
             import("react-dom/client").then(({ createRoot }) => {
-                createRoot(root).render(<DynamicMermaid chart={chart} />);
+                const reactRoot = createRoot(root);
+                rootsRef.current.push(reactRoot);
+                reactRoot.render(<DynamicMermaid chart={chart} />);
             });
         });
+
+        return () => {
+            rootsRef.current.forEach((root) => {
+                root.unmount();
+            });
+            rootsRef.current = [];
+        };
     }, [html]);
 
     return (
