@@ -32,6 +32,17 @@ export default function MarkdownPreview({
     useEffect(() => {
         if (!containerRef.current) return;
 
+        if (rootsRef.current.length) {
+            rootsRef.current.forEach((root) => {
+                try {
+                    root.unmount();
+                } catch {
+                    // ignore errors during unmount
+                }
+            });
+            rootsRef.current = [];
+        }
+
         const container = containerRef.current;
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = html;
@@ -75,15 +86,25 @@ export default function MarkdownPreview({
         });
 
         container.innerHTML = tempDiv.innerHTML;
-    }, [html]);
+    }, [html, theme]);
 
     useEffect(() => {
         if (!containerRef.current) return;
 
-        rootsRef.current.forEach((root) => {
-            root.unmount();
-        });
-        rootsRef.current = [];
+        if (rootsRef.current.length) {
+            const toUnmount = rootsRef.current.slice();
+            rootsRef.current = [];
+            requestAnimationFrame(() => {
+                toUnmount.forEach((root) => {
+                    try {
+                        root.unmount();
+                    } catch {
+                        // swallow errors during async unmount
+                        // console.error('Error unmounting root');
+                    }
+                });
+            });
+        }
 
         const mathElements =
             containerRef.current.querySelectorAll("[data-math]");
@@ -119,10 +140,19 @@ export default function MarkdownPreview({
         });
 
         return () => {
-            rootsRef.current.forEach((root) => {
-                root.unmount();
-            });
-            rootsRef.current = [];
+            if (rootsRef.current.length) {
+                const toUnmount = rootsRef.current.slice();
+                rootsRef.current = [];
+                requestAnimationFrame(() => {
+                    toUnmount.forEach((root) => {
+                        try {
+                            root.unmount();
+                        } catch {
+                            // console.error('Error unmounting root during cleanup');
+                        }
+                    });
+                });
+            }
         };
     }, [html, theme]);
 
