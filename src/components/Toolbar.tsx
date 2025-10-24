@@ -1,10 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 
-export default function Toolbar() {
+type ToolbarProps = {
+    onExport?: (fileName?: string) => void;
+};
+
+export default function Toolbar({ onExport }: ToolbarProps) {
     const { theme, previewStyle, toggleTheme, setPreviewStyle } = useTheme();
+    const [exportName, setExportName] = useState<string>("document");
 
     return (
         <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
@@ -85,8 +90,37 @@ export default function Toolbar() {
             </div>
 
             <div className="flex items-center gap-2">
-                <button className="px-3 py-1 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    Export
+                <label htmlFor="export-name" className="sr-only">
+                    Export filename
+                </label>
+                <input
+                    id="export-name"
+                    value={exportName}
+                    onChange={(e) => setExportName(e.target.value)}
+                    className="hidden sm:inline-block w-48 px-2 py-1 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="document"
+                />
+
+                <button
+                    onClick={() => onExport?.(exportName)}
+                    title="Export markdown"
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-gradient-to-b from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 transition-shadow shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    <span className="text-sm font-medium">Export</span>
                 </button>
             </div>
         </div>
