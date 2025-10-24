@@ -7,6 +7,8 @@ import { EditorView } from "@codemirror/view";
 import { githubLight, githubDark } from "@uiw/codemirror-theme-github";
 import MarkdownIt from "markdown-it";
 import MarkdownPreview from "./MarkdownPreview";
+import { useTheme } from "@/contexts/ThemeContext";
+import Toolbar from "./Toolbar";
 
 export default function MainEditor() {
     const [value, setValue] = useState(`# Hello Markdown
@@ -34,7 +36,7 @@ graph TD
 \`\`\`
 `);
     const [sanitizedHTML, setSanitizedHTML] = useState("");
-    const [isDark, setIsDark] = useState(false);
+    const { theme, previewStyle } = useTheme();
     const editorViewRef = useRef<EditorView | null>(null);
     const previewRef = useRef<HTMLDivElement>(null);
     const syncLockRef = useRef<"editor" | "preview" | null>(null);
@@ -46,23 +48,6 @@ graph TD
             typographer: true,
             breaks: true,
         });
-    }, []);
-
-    useEffect(() => {
-        const checkDarkMode = () => {
-            const isDarkMode = window.matchMedia(
-                "(prefers-color-scheme: dark)"
-            ).matches;
-            setIsDark(isDarkMode);
-        };
-
-        checkDarkMode();
-
-        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-        const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
-        mediaQuery.addEventListener("change", handler);
-
-        return () => mediaQuery.removeEventListener("change", handler);
     }, []);
 
     useEffect(() => {
@@ -150,26 +135,36 @@ graph TD
     }, []);
 
     return (
-        <div className="flex h-screen w-full overflow-hidden">
-            <div className="w-1/2 border-r border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 h-full overflow-hidden">
-                <CodeMirror
-                    value={value}
-                    height="100%"
-                    extensions={[markdown(), scrollExtension]}
-                    onChange={(val) => setValue(val)}
-                    onCreateEditor={(view) => {
-                        editorViewRef.current = view;
-                    }}
-                    theme={isDark ? githubDark : githubLight}
-                    className="h-full"
-                />
-            </div>
+        <div className="flex flex-col h-screen w-full overflow-hidden">
+            <Toolbar />
+            <div className="flex flex-1 overflow-hidden">
+                <div className="w-1/2 border-r border-gray-300 dark:border-gray-700 h-full overflow-hidden">
+                    <CodeMirror
+                        value={value}
+                        height="100%"
+                        extensions={[markdown(), scrollExtension]}
+                        onChange={(val) => setValue(val)}
+                        onCreateEditor={(view) => {
+                            editorViewRef.current = view;
+                        }}
+                        theme={theme === "dark" ? githubDark : githubLight}
+                        className="h-full"
+                    />
+                </div>
 
-            <div
-                ref={previewRef}
-                className="w-1/2 bg-gray-50 dark:bg-gray-800 h-full overflow-auto p-6"
-            >
-                <MarkdownPreview html={sanitizedHTML} />
+                <div
+                    ref={previewRef}
+                    className="w-1/2 bg-white dark:bg-gray-900 h-full overflow-auto p-6"
+                    style={{
+                        backgroundColor:
+                            theme === "dark" ? "#111827" : "#ffffff",
+                    }}
+                >
+                    <MarkdownPreview
+                        html={sanitizedHTML}
+                        previewStyle={previewStyle}
+                    />
+                </div>
             </div>
         </div>
     );

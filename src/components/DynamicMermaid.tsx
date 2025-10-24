@@ -4,9 +4,10 @@ import React, { useEffect, useRef } from "react";
 
 interface DynamicMermaidProps {
     chart: string;
+    theme: "light" | "dark";
 }
 
-export default function DynamicMermaid({ chart }: DynamicMermaidProps) {
+export default function DynamicMermaid({ chart, theme }: DynamicMermaidProps) {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -15,9 +16,11 @@ export default function DynamicMermaid({ chart }: DynamicMermaidProps) {
 
             const mermaid = (await import("mermaid")).default;
 
+            const mermaidTheme = theme === "dark" ? "dark" : "default";
+
             mermaid.initialize({
                 startOnLoad: false,
-                theme: "default",
+                theme: mermaidTheme,
             });
 
             try {
@@ -34,8 +37,12 @@ export default function DynamicMermaid({ chart }: DynamicMermaidProps) {
             }
         };
 
+        // コンテナをクリアしてから再レンダリング
+        if (containerRef.current) {
+            containerRef.current.innerHTML = "";
+        }
         renderChart();
-    }, [chart]);
+    }, [chart, theme]);
 
     return <div ref={containerRef} className="mermaid-container" />;
 }

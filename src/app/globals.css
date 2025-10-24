@@ -14,11 +14,9 @@
     --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
-    }
+.dark {
+    --background: #0a0a0a;
+    --foreground: #ededed;
 }
 
 html,
@@ -33,4 +31,40 @@ body {
     background: var(--background);
     color: var(--foreground);
     font-family: Arial, Helvetica, sans-serif;
+}
+
+.prose {
+    color: #171717;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+    color: #111827;
+}
+
+.prose p,
+.prose li {
+    color: #1f2937;
+}
+
+.dark .prose {
+    color: #e5e7eb;
+}
+
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4,
+.dark .prose h5,
+.dark .prose h6 {
+    color: #f9fafb;
+}
+
+.dark .prose p,
+.dark .prose li {
+    color: #d1d5db;
 }
