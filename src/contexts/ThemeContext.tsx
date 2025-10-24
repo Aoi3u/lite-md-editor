@@ -56,25 +56,24 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (!mounted) return;
-
-        const html = document.documentElement;
-        if (theme === "dark") {
-            html.setAttribute("class", "dark");
-        } else {
-            html.setAttribute("class", "");
-        }
+        applyThemeToDOM(theme);
     }, [theme, mounted]);
 
     const toggleTheme = () => {
         const newTheme = theme === "light" ? "dark" : "light";
         setThemeState(newTheme);
+        applyThemeToDOM(newTheme);
+        localStorage.setItem("theme", newTheme);
+    };
+
+    // Helper function to apply theme to DOM
+    const applyThemeToDOM = (t: Theme) => {
         const html = document.documentElement;
-        if (newTheme === "dark") {
+        if (t === "dark") {
             html.setAttribute("class", "dark");
         } else {
             html.setAttribute("class", "");
         }
-        localStorage.setItem("theme", newTheme);
     };
 
     const setPreviewStyle = (style: PreviewStyle) => {
