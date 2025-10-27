@@ -197,7 +197,7 @@ export default function MarkdownPreview({
     return (
         <div
             ref={containerRef}
-            className={`prose max-w-none prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-p:text-gray-900 dark:prose-p:text-gray-300 prose-li:text-gray-900 dark:prose-li:text-gray-300 prose-headings:font-bold prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-code:text-pink-600 dark:prose-code:text-pink-400 prose-strong:text-gray-900 dark:prose-strong:text-gray-100 dark:prose-invert ${
+            className={`preview-content prose-sm max-w-none prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-p:text-gray-900 dark:prose-p:text-gray-300 prose-li:text-gray-900 dark:prose-li:text-gray-300 prose-headings:font-bold prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-code:text-pink-600 dark:prose-code:text-pink-400 prose-strong:text-gray-900 dark:prose-strong:text-gray-100 dark:prose-invert prose-p:leading-tight prose-li:leading-tight ${
                 previewStyle === "github" ? "prose-github" : ""
             }`}
         />

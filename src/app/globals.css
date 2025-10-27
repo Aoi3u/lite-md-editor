@@ -68,3 +68,32 @@ body {
 .dark .prose li {
     color: #d1d5db;
 }
+
+.preview-content {
+    color: #0b1220;
+}
+
+.preview-content h1,
+.preview-content h2,
+.preview-content h3,
+.preview-content h4,
+.preview-content h5,
+.preview-content h6,
+.preview-content p,
+.preview-content li {
+    color: #0f172a;
+}
+
+.dark .preview-content {
+    color: #e6eef2;
+}
+.dark .preview-content h1,
+.dark .preview-content h2,
+.dark .preview-content h3,
+.dark .preview-content h4,
+.dark .preview-content h5,
+.dark .preview-content h6,
+.dark .preview-content p,
+.dark .preview-content li {
+    color: #d1d5db;
+}
