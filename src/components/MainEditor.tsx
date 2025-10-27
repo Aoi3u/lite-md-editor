@@ -134,9 +134,34 @@ graph TD
         };
     }, []);
 
+    const handleExport = (fileName?: string) => {
+        try {
+            const blob = new Blob([value], {
+                type: "text/markdown;charset=utf-8",
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+
+            let fname = (fileName || "document").trim();
+            if (!fname) fname = "document";
+            if (!fname.toLowerCase().endsWith(".md")) {
+                fname = `${fname}.md`;
+            }
+
+            a.download = fname;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        } catch {
+            // ignore
+        }
+    };
+
     return (
         <div className="flex flex-col h-screen w-full overflow-hidden">
-            <Toolbar />
+            <Toolbar onExport={handleExport} />
             <div className="flex flex-1 overflow-hidden">
                 <div className="w-1/2 border-r border-gray-300 dark:border-gray-700 h-full overflow-hidden">
                     <CodeMirror
