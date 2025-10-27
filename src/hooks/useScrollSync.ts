@@ -1,5 +1,6 @@
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect, useState } from "react";
 import { EditorView } from "@codemirror/view";
+import type { Extension } from "@codemirror/state";
 
 interface UseScrollSyncOptions {
     isEnabled?: boolean;
@@ -9,9 +10,13 @@ export function useScrollSync({ isEnabled = true }: UseScrollSyncOptions = {}) {
     const editorViewRef = useRef<EditorView | null>(null);
     const previewRef = useRef<HTMLDivElement | null>(null);
     const syncLockRef = useRef<"editor" | "preview" | null>(null);
+    const extensionRef = useRef<Extension | null>(null);
+    const [extension, setExtension] = useState<Extension | null>(null);
 
-    const scrollExtension = useMemo(() => {
-        return EditorView.domEventHandlers({
+    useEffect(() => {
+        if (!isEnabled) return;
+
+        const ext = EditorView.domEventHandlers({
             scroll: (event, view) => {
                 if (!isEnabled || syncLockRef.current === "preview") return;
 
@@ -23,8 +28,10 @@ export function useScrollSync({ isEnabled = true }: UseScrollSyncOptions = {}) {
                 }
 
                 const scroller = view.scrollDOM;
-                const editorScrollHeight = scroller.scrollHeight - scroller.clientHeight;
-                const previewScrollHeight = previewDiv.scrollHeight - previewDiv.clientHeight;
+                const editorScrollHeight =
+                    scroller.scrollHeight - scroller.clientHeight;
+                const previewScrollHeight =
+                    previewDiv.scrollHeight - previewDiv.clientHeight;
 
                 if (editorScrollHeight > 0 && previewScrollHeight > 0) {
                     const ratio = scroller.scrollTop / editorScrollHeight;
@@ -38,6 +45,14 @@ export function useScrollSync({ isEnabled = true }: UseScrollSyncOptions = {}) {
                 });
             },
         });
+
+        extensionRef.current = ext as Extension;
+        setExtension(extensionRef.current);
+
+        return () => {
+            extensionRef.current = null;
+            setExtension(null);
+        };
     }, [isEnabled]);
 
     useEffect(() => {
@@ -57,8 +72,10 @@ export function useScrollSync({ isEnabled = true }: UseScrollSyncOptions = {}) {
             }
 
             const scroller = view.scrollDOM;
-            const editorScrollHeight = scroller.scrollHeight - scroller.clientHeight;
-            const previewScrollHeight = previewDiv.scrollHeight - previewDiv.clientHeight;
+            const editorScrollHeight =
+                scroller.scrollHeight - scroller.clientHeight;
+            const previewScrollHeight =
+                previewDiv.scrollHeight - previewDiv.clientHeight;
 
             if (previewScrollHeight > 0 && editorScrollHeight > 0) {
                 const ratio = previewDiv.scrollTop / previewScrollHeight;
@@ -73,13 +90,13 @@ export function useScrollSync({ isEnabled = true }: UseScrollSyncOptions = {}) {
         };
 
         previewDiv.addEventListener("scroll", handlePreviewScroll);
-        return () => previewDiv.removeEventListener("scroll", handlePreviewScroll);
+        return () =>
+            previewDiv.removeEventListener("scroll", handlePreviewScroll);
     }, [isEnabled]);
 
     return {
         editorViewRef,
         previewRef,
-        scrollExtension,
+        scrollExtension: extension,
     };
 }
-

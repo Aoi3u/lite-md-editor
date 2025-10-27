@@ -10,18 +10,15 @@ interface PreviewPaneProps {
 }
 
 export default function PreviewPane({ html, previewRef }: PreviewPaneProps) {
-    const { theme, previewStyle } = useTheme();
+    const { previewStyle } = useTheme();
 
     return (
         <div
-            ref={previewRef as any}
-            className="w-1/2 bg-white dark:bg-gray-900 h-full overflow-auto p-6"
-            style={{
-                backgroundColor: theme === "dark" ? "#111827" : "#ffffff",
-            }}
+            ref={previewRef}
+            className="w-1/2 bg-background h-full overflow-auto p-6"
+            id="preview-pane"
         >
             <MarkdownPreview html={html} previewStyle={previewStyle} />
         </div>
     );
 }
-
