@@ -13,7 +13,8 @@ interface Props {
     items: Item[];
     position: { top: number; left: number } | null;
     onSelect: (item: Item) => void;
-    onClose: () => void;
+    // if called with `false`, the implementation should keep the inserted `/` in the editor
+    onClose: (removeSlash?: boolean) => void;
 }
 
 export default function CommandPalette({
@@ -53,6 +54,15 @@ export default function CommandPalette({
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 onSelect(items[index]);
+            } else if (
+                e.key.length === 1 &&
+                !e.metaKey &&
+                !e.ctrlKey &&
+                !e.altKey
+            ) {
+                // Printable character typed — close palette but keep the `/` so user can continue typing
+                // Do not preventDefault so the keystroke reaches the editor
+                onClose(false);
             }
         };
 

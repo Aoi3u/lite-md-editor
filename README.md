@@ -181,3 +181,29 @@ graph TD
 ## License
 
 MIT License
+
+## スラッシュコマンドテンプレート
+
+-   エディタ内で `/` を押すとテンプレートパレットが開きます。
+-   矢印キー（↑/↓）で選択を移動し、Enter でテンプレートを挿入、Esc または外側クリックでキャンセルします。
+-   キャンセルすると最初に挿入された `/` は削除されます。テンプレートを選ぶと `/` はテンプレートに置き換えられます。
+-   テンプレートには見出し、リスト、リンク、画像、表、コードブロック、数式（KaTeX）、Mermaid 図などの基本スニペットが含まれます。
+
+-   `/` の後に他の文字を入力すると、パレットは閉じられ `/` は残ります（例: `/a`）。
+
+テンプレートは `src/utils/templates.ts` で定義されており、必要に応じて調整できます。
+
+本エディタは軽量化を重視しており、Mermaid や KaTeX のような重い機能は遅延読み込みされ、テンプレートは静的にしてランタイム負荷を抑えています。
+
+## Slash command templates
+
+-   Press `/` inside the editor to open the templates palette.
+-   Use ArrowUp / ArrowDown to change selection, Enter to insert the selected template, Esc or click outside to cancel.
+-   When canceled the initial `/` is removed; when a template is chosen the `/` is replaced by the template text.
+-   Templates include common Markdown snippets (headings, lists, links, images, tables), code blocks, math (KaTeX), and Mermaid diagrams.
+
+-   Typing any printable character after `/` closes the palette but keeps the `/` so you can continue typing (e.g. `/a`).
+
+The templates are defined in `src/utils/templates.ts` and can be adjusted or extended.
+
+This editor aims to stay lightweight: heavy preview features (Mermaid, KaTeX) are lazy-loaded and templates are static to avoid runtime overhead.
