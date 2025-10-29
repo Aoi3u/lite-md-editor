@@ -282,6 +282,59 @@
 @layer components {
 }
 
+/* Command palette component styling to match app chrome */
+.command-palette {
+    position: absolute;
+    z-index: 50;
+    width: 320px;
+    max-width: 90vw;
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, hsl(var(--card)) 96%, transparent);
+    box-shadow: var(--shadow-elev);
+    border: 1px solid hsl(var(--border));
+    overflow: hidden;
+    transition: transform var(--trans-fast) ease, opacity var(--trans-fast) ease;
+}
+
+.command-palette .cp-list {
+    padding: 0.5rem 0;
+    max-height: 14rem;
+    overflow: auto;
+}
+
+.command-palette .cp-item {
+    padding: 0.6rem 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+}
+
+.command-palette .cp-item:hover,
+.command-palette .cp-item.active {
+    /* stronger active highlight with accent bar */
+    background: color-mix(in srgb, hsl(var(--card)) 86%, hsl(var(--border)) 8%);
+    box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+    border-left: 4px solid hsl(var(--primary));
+    padding-left: calc(0.6rem - 4px);
+}
+.command-palette .cp-item:hover {
+    background: color-mix(in srgb, hsl(var(--card)) 88%, hsl(var(--border)) 6%);
+}
+
+.command-palette .cp-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.command-palette .cp-desc {
+    font-size: 0.8rem;
+    /* Use foreground with reduced opacity to ensure contrast in light/dark themes */
+    color: hsl(var(--foreground) / 0.65);
+}
+
+.command-palette .cp-item.active .cp-title {
+    color: hsl(var(--foreground));
+}
+
 @layer utilities {
     /* Helpful utilities used by components */
     .glass {
