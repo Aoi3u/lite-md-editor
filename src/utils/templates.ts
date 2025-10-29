@@ -109,6 +109,7 @@ export const TEMPLATES: TemplateItem[] = [
         description: "```$$...$$```",
         template: "```\n$$\n\\frac{a}{b} = c\n$$\n```\n",
     },
+
     {
         id: "mermaid",
         title: "Mermaid diagram",

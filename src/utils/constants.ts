@@ -1,1 +1,1 @@
-export const INITIAL_MARKDOWN = ``;
+export const INITIAL_MARKDOWN = "";

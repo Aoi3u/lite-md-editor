@@ -10,6 +10,11 @@ type ToolbarProps = {
 
 export default function Toolbar({ onExport }: ToolbarProps) {
     const { theme, toggleTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        const t = setTimeout(() => setMounted(true), 0);
+        return () => clearTimeout(t);
+    }, []);
     const [exportName, setExportName] = useState<string>("document");
     const [isEditingFilename, setIsEditingFilename] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -80,12 +85,30 @@ export default function Toolbar({ onExport }: ToolbarProps) {
                 <button
                     onClick={toggleTheme}
                     aria-label="Toggle theme"
-                    title={`Switch to ${
-                        theme === "dark" ? "Light" : "Dark"
-                    } mode`}
+                    title={
+                        mounted
+                            ? `Switch to ${
+                                  theme === "dark" ? "Light" : "Dark"
+                              } mode`
+                            : "Toggle theme"
+                    }
                     className="btn"
                 >
-                    {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                    {mounted ? (
+                        theme === "dark" ? (
+                            <Sun size={18} />
+                        ) : (
+                            <Moon size={18} />
+                        )
+                    ) : (
+                        <span
+                            style={{
+                                display: "inline-block",
+                                width: 18,
+                                height: 18,
+                            }}
+                        />
+                    )}
                 </button>
 
                 <button

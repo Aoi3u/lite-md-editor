@@ -19,11 +19,8 @@ export function useExport(content: string) {
             a.click();
             a.remove();
             URL.revokeObjectURL(url);
-        } catch {
-            // ignore error
-        }
+        } catch {}
     };
 
     return exportToFile;
 }
-
