@@ -114,6 +114,6 @@ export const TEMPLATES: TemplateItem[] = [
         title: "Mermaid diagram",
         description: "mermaid sequence diagram",
         template:
-            "```mermaid\nsequenceDiagram\n    Alice->>Bob: Hello Bob, how are you?\n```\n\n",
+            "```mermaid\ngraph TD\nA[Start] --> B[Process]\nB --> C[End]\n```\n\n",
     },
 ];
