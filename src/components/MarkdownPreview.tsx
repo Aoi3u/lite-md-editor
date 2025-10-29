@@ -40,9 +40,7 @@ export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
             rootsRef.current.forEach((root) => {
                 try {
                     root.unmount();
-                } catch {
-                    // ignore
-                }
+                } catch {}
             });
             rootsRef.current = [];
         }
@@ -104,7 +102,6 @@ export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
         Array.from(tempDiv.children).forEach((child) =>
             processNode(child as Element)
         );
-
         container.innerHTML = tempDiv.innerHTML;
     }, [html]);
 
@@ -120,9 +117,7 @@ export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
                 toUnmount.forEach((root) => {
                     try {
                         root.unmount();
-                    } catch {
-                        // ignore
-                    }
+                    } catch {}
                 });
             });
         }
@@ -153,7 +148,7 @@ export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
             const chart = el.getAttribute("data-mermaid") || "";
             const rootEl = document.createElement("div");
             rootEl.className =
-                "mermaid-chart-container my-4 flex justify-center"; // Center diagram
+                "mermaid-chart-container my-4 flex justify-center";
             el.replaceWith(rootEl);
 
             import("react-dom/client").then(({ createRoot }) => {
@@ -175,9 +170,7 @@ export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
                     toUnmount.forEach((root) => {
                         try {
                             root.unmount();
-                        } catch {
-                            // ignore
-                        }
+                        } catch {}
                     });
                 });
             }
@@ -187,15 +180,7 @@ export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
     return (
         <div
             ref={containerRef}
-            className={`
-                preview-content prose prose-sm max-w-none dark:prose-invert
-                    /* previewStyle removed: always use default prose setup or customize globally */
-                text-slate-800 dark:text-slate-200
-                [--tw-prose-body:#0f172a] dark:[--tw-prose-body:#e5e7eb]
-                prose-pre:bg-secondary prose-code:text-accent-foreground prose-code:font-mono prose-code:text-sm
-                prose-headings:font-semibold
-                prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:underline
-            `}
+            className={`preview-content prose prose-sm max-w-none dark:prose-invert text-slate-800 dark:text-slate-200 [--tw-prose-body:#0f172a] dark:[--tw-prose-body:#e5e7eb] prose-pre:bg-secondary prose-code:text-accent-foreground prose-code:font-mono prose-code:text-sm prose-headings:font-semibold prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:underline`}
         />
     );
 }

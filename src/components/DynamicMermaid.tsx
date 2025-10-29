@@ -37,7 +37,6 @@ export default function DynamicMermaid({ chart, theme }: DynamicMermaidProps) {
             }
         };
 
-        // コンテナをクリアしてから再レンダリング
         if (containerRef.current) {
             containerRef.current.innerHTML = "";
         }

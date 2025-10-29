@@ -13,7 +13,6 @@ interface Props {
     items: Item[];
     position: { top: number; left: number } | null;
     onSelect: (item: Item) => void;
-    // if called with `false`, the implementation should keep the inserted `/` in the editor
     onClose: (removeSlash?: boolean) => void;
 }
 
@@ -29,7 +28,6 @@ export default function CommandPalette({
 
     useEffect(() => {
         if (!position) return;
-        // schedule index reset to avoid synchronous setState in effect
         requestAnimationFrame(() => setIndex(0));
     }, [position]);
 
@@ -37,7 +35,6 @@ export default function CommandPalette({
         if (!position) return;
 
         const onKey = (e: KeyboardEvent) => {
-            // capture phase listener will intercept keys before editor
             if (e.key === "Escape") {
                 e.preventDefault();
                 e.stopImmediatePropagation();
@@ -60,15 +57,11 @@ export default function CommandPalette({
                 !e.ctrlKey &&
                 !e.altKey
             ) {
-                // Printable character typed — close palette but keep the `/` so user can continue typing
-                // Do not preventDefault so the keystroke reaches the editor
                 onClose(false);
             }
         };
 
-        // use capture so we can prevent editor from handling arrow keys
         window.addEventListener("keydown", onKey, true);
-
         return () => window.removeEventListener("keydown", onKey, true);
     }, [position, index, items, onSelect, onClose]);
 
@@ -76,22 +69,17 @@ export default function CommandPalette({
         const list = listRef.current;
         if (!list) return;
         const child = list.children?.[index] as HTMLElement | undefined;
-        if (child) {
-            // ensure the active item is visible
+        if (child)
             child.scrollIntoView({ block: "nearest", inline: "nearest" });
-        }
     }, [index]);
 
-    // close when clicking outside
     useEffect(() => {
         if (!position) return;
         const onDown = (e: MouseEvent) => {
             const el = ref.current;
             if (!el) return;
             const target = e.target as Node | null;
-            if (!target || !el.contains(target)) {
-                onClose();
-            }
+            if (!target || !el.contains(target)) onClose();
         };
         document.addEventListener("mousedown", onDown);
         return () => document.removeEventListener("mousedown", onDown);
@@ -111,8 +99,6 @@ export default function CommandPalette({
             role="dialog"
             aria-label="Command Palette"
         >
-            {/* Removed filter input — templates are shown as a static list for quick selection */}
-
             <ul
                 ref={listRef}
                 className="cp-list"

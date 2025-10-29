@@ -1,13 +1,6 @@
-/* eslint-disable */
 "use client";
 
-import React, {
-    createContext,
-    useContext,
-    useState,
-    useEffect,
-    useLayoutEffect,
-} from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
 
@@ -19,50 +12,35 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [mounted, setMounted] = useState(false);
-    const [theme, setThemeState] = useState<Theme>("light");
-
-    useLayoutEffect(() => {
-        setMounted(true);
-    }, []);
-
-    useLayoutEffect(() => {
-        if (!mounted) return;
-
-        const savedTheme = localStorage.getItem("theme") as Theme | null;
-        if (savedTheme) {
-            setThemeState(savedTheme);
-        } else {
-            const systemTheme = window.matchMedia(
-                "(prefers-color-scheme: dark)"
-            ).matches
-                ? "dark"
-                : "light";
-            setThemeState(systemTheme);
+    const getInitialTheme = (): Theme => {
+        if (typeof window === "undefined") return "light";
+        try {
+            const saved = localStorage.getItem("theme") as Theme | null;
+            if (saved) return saved;
+        } catch {
+            /* noop */
         }
-
-        // No preview style persistence anymore
-    }, [mounted]);
-
-    useEffect(() => {
-        if (!mounted) return;
-        applyThemeToDOM(theme);
-    }, [theme, mounted]);
-
-    const toggleTheme = () => {
-        const newTheme = theme === "light" ? "dark" : "light";
-        setThemeState(newTheme);
-        applyThemeToDOM(newTheme);
-        localStorage.setItem("theme", newTheme);
+        return window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
     };
 
-    // Helper function to apply theme to DOM
-    const applyThemeToDOM = (t: Theme) => {
+    const [theme, setTheme] = useState<Theme>(getInitialTheme);
+
+    useEffect(() => {
         const html = document.documentElement;
-        if (t === "dark") {
-            html.setAttribute("class", "dark");
-        } else {
-            html.setAttribute("class", "");
+        if (theme === "dark") html.setAttribute("class", "dark");
+        else html.setAttribute("class", "");
+    }, [theme]);
+
+    const toggleTheme = () => {
+        const next = theme === "light" ? "dark" : "light";
+        setTheme(next);
+        try {
+            localStorage.setItem("theme", next);
+        } catch {
+            /* noop */
         }
     };
 
@@ -74,9 +52,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useTheme() {
-    const context = useContext(ThemeContext);
-    if (!context) {
-        throw new Error("useTheme must be used within ThemeProvider");
-    }
-    return context;
+    const ctx = useContext(ThemeContext);
+    if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
+    return ctx;
 }

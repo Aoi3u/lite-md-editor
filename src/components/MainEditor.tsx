@@ -15,7 +15,6 @@ import { TEMPLATES } from "@/utils/templates";
 export default function MainEditor() {
     const [value, setValue] = useState(INITIAL_MARKDOWN);
 
-    // Command palette state
     const [palettePosition, setPalettePosition] = useState<{
         top: number;
         left: number;
@@ -35,7 +34,6 @@ export default function MainEditor() {
 
     const handleSlash = useCallback((view: EditorView, pos: number) => {
         try {
-            // The editor prevented the default '/' insertion; insert it explicitly
             const newPos = pos + 1;
             view.dispatch({
                 changes: { from: pos, to: pos, insert: "/" },
@@ -43,7 +41,6 @@ export default function MainEditor() {
                 scrollIntoView: true,
             });
 
-            // compute coords at the position after the inserted slash
             const coords = view.coordsAtPos(newPos) || view.coordsAtPos(pos);
             if (!coords) return;
             const left = coords.left + window.scrollX;
@@ -51,32 +48,21 @@ export default function MainEditor() {
             setPalettePosition({ left, top });
             lastSlashPosRef.current = newPos;
             lastSlashViewRef.current = view;
-            // ensure editor keeps focus
             view.focus();
-        } catch {
-            // ignore
-        }
+        } catch {}
     }, []);
 
-    // detect when user removes the slash manually — close palette
     const handleDocChange = (view: EditorView) => {
         try {
             const slashPos = lastSlashPosRef.current;
             if (typeof slashPos !== "number") return;
-            // character before slashPos should be '/'
             const start = Math.max(0, slashPos - 1);
             const ch = view.state.doc.sliceString(start, start + 1);
-            if (ch !== "/") {
-                // user removed the slash — close palette and do not try to remove slash
-                closePalette(false);
-            }
-        } catch {
-            // ignore
-        }
+            if (ch !== "/") closePalette(false);
+        } catch {}
     };
 
     const closePalette = (removeSlash = true) => {
-        // If canceling (removeSlash=true) and we have a recorded slash, remove it
         try {
             if (removeSlash) {
                 const view = editorViewRef.current ?? lastSlashViewRef.current;
@@ -84,14 +70,10 @@ export default function MainEditor() {
                 if (view && typeof slashPos === "number") {
                     const from = Math.max(0, slashPos - 1);
                     const to = slashPos;
-                    // remove the single slash character
                     view.dispatch({ changes: { from, to, insert: "" } });
                 }
             }
-        } catch {
-            // ignore
-        }
-
+        } catch {}
         setPalettePosition(null);
         lastSlashPosRef.current = null;
         lastSlashViewRef.current = null;
@@ -173,9 +155,8 @@ export default function MainEditor() {
         startDrag();
     };
 
-    const handleTouchStart: React.TouchEventHandler<HTMLDivElement> = () => {
+    const handleTouchStart: React.TouchEventHandler<HTMLDivElement> = () =>
         startDrag();
-    };
 
     return (
         <div className="app-shell">
@@ -227,7 +208,7 @@ export default function MainEditor() {
                         const rect = el.getBoundingClientRect();
                         const leftW = left.getBoundingClientRect().width;
                         const curPct = leftW / rect.width;
-                        const step = 0.03; // 3%
+                        const step = 0.03;
                         if (e.key === "ArrowLeft") {
                             const next = Math.max(0.15, curPct - step);
                             el.style.gridTemplateColumns = `${Math.round(

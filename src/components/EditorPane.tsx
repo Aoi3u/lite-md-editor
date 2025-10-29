@@ -80,9 +80,7 @@ export default function EditorPane({
                               onSlash(view, pos);
                               return;
                           }
-                      } catch {
-                          // ignore
-                      }
+                      } catch {}
                   },
               })
             : null;
@@ -90,9 +88,7 @@ export default function EditorPane({
             ? EditorView.updateListener.of((v) => {
                   try {
                       if (v.docChanged) onDocChange(v.view);
-                  } catch {
-                      // ignore
-                  }
+                  } catch {}
               })
             : null;
 
@@ -134,7 +130,6 @@ export default function EditorPane({
 
     return (
         <div className="h-full overflow-hidden relative flex-1">
-            {/* Placeholder overlay when editor is empty */}
             {(!value || !value.trim()) && (
                 <div className="pointer-events-none absolute left-1/2 top-1/3 z-10 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3">
                     <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[color-mix(in_srgb,hsl(var(--card))_88%,transparent)] dark:bg-[color-mix(in_srgb,hsl(var(--card))_60%,transparent)] text-2xl font-semibold text-foreground shadow-md border border-[hsl(var(--border))]">
