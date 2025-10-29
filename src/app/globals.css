@@ -1,0 +1,344 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+@plugin "@tailwindcss/typography";
+
+/*
+    Modern / minimal global styles
+    - Uses CSS variables for theming (light/dark)
+    - Glassmorphism cards, smooth transitions, rounded corners
+    - Responsive editor/preview split layout helpers
+*/
+
+@layer base {
+    :root {
+        /* Palette (H / S% / L%) — tuned for modern minimal look */
+        --bg-h: 220;
+        --bg-s: 20%;
+        --bg-l: 98%; /* light page */
+        --surface-h: 220;
+        --surface-s: 18%;
+        --surface-l: 100%;
+        --muted-h: 215;
+        --muted-s: 14%;
+        --muted-l: 88%;
+        --fg-h: 217;
+        --fg-s: 14%;
+        --fg-l: 12%;
+
+        --primary-h: 245;
+        --primary-s: 85%;
+        --primary-l: 60%; /* violet-accent */
+        --accent-h: 200;
+        --accent-s: 85%;
+        --accent-l: 45%; /* cyan */
+
+        --glass-alpha: 0.6;
+
+        /* Semantic tokens */
+        --background: var(--bg-h) var(--bg-s) var(--bg-l);
+        --foreground: var(--fg-h) var(--fg-s) var(--fg-l);
+        --card: 0 0% 100% / 1;
+        --card-foreground: var(--foreground);
+        --muted: var(--muted-h) var(--muted-s) var(--muted-l);
+        --border: 220 12% 92%;
+
+        --primary: var(--primary-h) var(--primary-s) var(--primary-l);
+        --accent: var(--accent-h) var(--accent-s) var(--accent-l);
+
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 18px;
+        --shadow-subtle: 0 6px 18px rgba(16, 24, 40, 0.06);
+        --shadow-elev: 0 12px 40px rgba(16, 24, 40, 0.12);
+
+        --trans-fast: 150ms;
+        --trans-md: 250ms;
+    }
+
+    /* Dark override */
+    .dark {
+        --bg-h: 222;
+        --bg-s: 10%;
+        --bg-l: 8%;
+        --muted-l: 16%;
+        --fg-l: 96%;
+        --card: 220 14% 10% / 0.9;
+        --border: 220 10% 14%;
+    }
+
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        background: linear-gradient(
+            180deg,
+            hsl(var(--bg-h) var(--bg-s) calc(var(--bg-l) - 1%)),
+            hsl(var(--bg-h) var(--bg-s) var(--bg-l)) 60%
+        );
+        color: hsl(var(--foreground));
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+            Roboto, "Helvetica Neue", Arial;
+        font-feature-settings: "tnum" 1, "ss01" 0;
+        min-height: 100vh;
+        overflow: auto;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    /* App shell helpers */
+    .app-shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-rows: auto 1fr;
+    }
+
+    /* Top toolbar (glass) */
+    .toolbar {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        padding: 0.35rem 0.75rem;
+        margin: 0.5rem 0.5rem 0.6rem;
+        border-radius: var(--radius-md);
+        background: color-mix(in srgb, hsl(var(--card)) 85%, transparent);
+        box-shadow: var(--shadow-subtle);
+        backdrop-filter: blur(6px) saturate(120%);
+        border: 1px solid hsl(var(--border));
+    }
+
+    .toolbar .title {
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin-right: auto;
+    }
+
+    .btn {
+        --btn-bg: hsl(var(--primary));
+        --btn-fg: hsl(210 20% 98%);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.45rem 0.75rem;
+        border-radius: 999px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        background: linear-gradient(
+            180deg,
+            hsl(var(--primary)) 0%,
+            color-mix(in srgb, hsl(var(--primary)) 92%, black 8%) 100%
+        );
+        color: var(--btn-fg);
+        border: none;
+        box-shadow: 0 6px 18px rgba(59, 53, 120, 0.08);
+        transition: transform var(--trans-fast) ease,
+            box-shadow var(--trans-fast) ease, opacity var(--trans-fast) ease;
+        cursor: pointer;
+    }
+
+    .btn:active {
+        transform: translateY(1px) scale(0.997);
+    }
+    .btn:focus {
+        outline: 2px solid
+            color-mix(in srgb, hsl(var(--primary)) 60%, white 40%);
+        outline-offset: 2px;
+    }
+
+    /* Main editor / preview split */
+    .editor-layout {
+        display: grid;
+        /* 3 columns: editor | divider(auto) | preview */
+        grid-template-columns: 1fr auto 1fr;
+        gap: clamp(2px, 0.2vw, 6px);
+        padding: 0.5rem;
+        align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+        .editor-layout {
+            grid-template-columns: 1fr;
+            padding: 0.5rem;
+        }
+        .toolbar {
+            margin: 0.5rem;
+        }
+    }
+
+    .pane {
+        background: color-mix(in srgb, hsl(var(--card)) 92%, transparent);
+        border-radius: var(--radius-lg);
+        padding: 0.5rem;
+        box-shadow: var(--shadow-elev);
+        border: 1px solid hsl(var(--border));
+        min-height: 64vh;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        transition: box-shadow var(--trans-md) ease,
+            transform var(--trans-md) ease;
+    }
+
+    /* divider between editor and preview */
+    .divider {
+        width: 6px;
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.04),
+            rgba(0, 0, 0, 0.02)
+        );
+        cursor: col-resize;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .divider:focus {
+        outline: 2px solid
+            color-mix(in srgb, hsl(var(--primary)) 35%, white 65%);
+        outline-offset: 2px;
+    }
+
+    .divider::before {
+        content: "";
+        width: 1px;
+        height: 28px;
+        border-radius: 2px;
+        background: rgba(16, 24, 40, 0.06);
+    }
+
+    @media (max-width: 900px) {
+        .divider {
+            display: none;
+        }
+    }
+
+    .pane:focus-within {
+        box-shadow: 0 18px 50px rgba(16, 24, 40, 0.12);
+        transform: translateY(-2px);
+    }
+
+    .pane-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-bottom: 0.25rem;
+        border-bottom: 1px solid hsl(var(--border));
+    }
+
+    /* Preview typography — ensure good contrast and readability */
+    .preview-content.prose {
+        color: hsl(var(--foreground)) !important;
+    }
+    .preview-content.prose
+        :where(p, li, span, h1, h2, h3, h4, h5, h6, a, code, pre, blockquote) {
+        color: inherit !important;
+    }
+
+    /* CodeMirror and scrollbars — slim and modern */
+    .cm-scroller::-webkit-scrollbar,
+    div[class*="overflow-auto"]::-webkit-scrollbar {
+        width: 9px;
+        height: 9px;
+    }
+    .cm-scroller::-webkit-scrollbar-track,
+    div[class*="overflow-auto"]::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+    .cm-scroller::-webkit-scrollbar-thumb,
+    div[class*="overflow-auto"]::-webkit-scrollbar-thumb {
+        background-color: rgba(16, 24, 40, 0.08);
+        border-radius: 999px;
+    }
+    .cm-scroller::-webkit-scrollbar-thumb:hover,
+    div[class*="overflow-auto"]::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(16, 24, 40, 0.16);
+    }
+
+    /* Mermaid SVG responsiveness */
+    .mermaid-container svg {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    /* Small utility */
+    .center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+@layer components {
+}
+
+/* Command palette component styling to match app chrome */
+.command-palette {
+    position: absolute;
+    z-index: 50;
+    width: 320px;
+    max-width: 90vw;
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, hsl(var(--card)) 96%, transparent);
+    box-shadow: var(--shadow-elev);
+    border: 1px solid hsl(var(--border));
+    overflow: hidden;
+    transition: transform var(--trans-fast) ease, opacity var(--trans-fast) ease;
+}
+
+.command-palette .cp-list {
+    padding: 0.5rem 0;
+    max-height: 14rem;
+    overflow: auto;
+}
+
+.command-palette .cp-item {
+    padding: 0.6rem 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+}
+
+.command-palette .cp-item:hover,
+.command-palette .cp-item.active {
+    /* stronger active highlight with accent bar */
+    background: color-mix(in srgb, hsl(var(--card)) 86%, hsl(var(--border)) 8%);
+    box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+    border-left: 4px solid hsl(var(--primary));
+    padding-left: calc(0.6rem - 4px);
+}
+.command-palette .cp-item:hover {
+    background: color-mix(in srgb, hsl(var(--card)) 88%, hsl(var(--border)) 6%);
+}
+
+.command-palette .cp-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.command-palette .cp-desc {
+    font-size: 0.8rem;
+    /* Use foreground with reduced opacity to ensure contrast in light/dark themes */
+    color: hsl(var(--foreground) / 0.65);
+}
+
+.command-palette .cp-item.active .cp-title {
+    color: hsl(var(--foreground));
+}
+
+@layer utilities {
+    /* Helpful utilities used by components */
+    .glass {
+        background: color-mix(in srgb, hsl(var(--card)) 72%, transparent);
+        backdrop-filter: blur(6px) saturate(120%);
+    }
+}
