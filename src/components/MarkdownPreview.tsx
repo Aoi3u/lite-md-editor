@@ -194,9 +194,11 @@ export default function MarkdownPreview({
             className={`
                 preview-content prose prose-sm max-w-none dark:prose-invert
                 ${previewStyle === "github" ? "prose-github" : ""}
-                 prose-pre:bg-secondary prose-code:text-accent-foreground prose-code:font-mono prose-code:text-sm
-                 prose-headings:font-semibold
-                 prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:underline
+                text-slate-800 dark:text-slate-200
+                [--tw-prose-body:#0f172a] dark:[--tw-prose-body:#e5e7eb]
+                prose-pre:bg-secondary prose-code:text-accent-foreground prose-code:font-mono prose-code:text-sm
+                prose-headings:font-semibold
+                prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:underline
             `}
         />
     );

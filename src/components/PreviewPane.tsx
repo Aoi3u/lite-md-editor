@@ -15,7 +15,7 @@ export default function PreviewPane({ html, previewRef }: PreviewPaneProps) {
     return (
         <div
             ref={previewRef}
-            className="w-1/2 bg-background h-full overflow-auto p-6"
+            className="h-full overflow-auto p-6"
             id="preview-pane"
         >
             <MarkdownPreview html={html} previewStyle={previewStyle} />
