@@ -10,13 +10,10 @@ import React, {
 } from "react";
 
 type Theme = "light" | "dark";
-type PreviewStyle = "github" | "default";
 
 interface ThemeContextType {
     theme: Theme;
-    previewStyle: PreviewStyle;
     toggleTheme: () => void;
-    setPreviewStyle: (style: PreviewStyle) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -24,8 +21,6 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [mounted, setMounted] = useState(false);
     const [theme, setThemeState] = useState<Theme>("light");
-    const [previewStyle, setPreviewStyleState] =
-        useState<PreviewStyle>("github");
 
     useLayoutEffect(() => {
         setMounted(true);
@@ -46,12 +41,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             setThemeState(systemTheme);
         }
 
-        const savedStyle = localStorage.getItem(
-            "previewStyle"
-        ) as PreviewStyle | null;
-        if (savedStyle) {
-            setPreviewStyleState(savedStyle);
-        }
+        // No preview style persistence anymore
     }, [mounted]);
 
     useEffect(() => {
@@ -76,15 +66,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    const setPreviewStyle = (style: PreviewStyle) => {
-        setPreviewStyleState(style);
-        localStorage.setItem("previewStyle", style);
-    };
-
     return (
-        <ThemeContext.Provider
-            value={{ theme, previewStyle, toggleTheme, setPreviewStyle }}
-        >
+        <ThemeContext.Provider value={{ theme, toggleTheme }}>
             {children}
         </ThemeContext.Provider>
     );

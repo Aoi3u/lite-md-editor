@@ -29,7 +29,7 @@ Lite Markdown Editor は、Next.js 16 をベースにした軽量で高機能な
 
 ### 🚧 開発予定の機能
 
--   **UI カスタマイズ**: テーマとプレビュースタイルの切り替え
+-   **UI カスタマイズ**: テーマの切り替え
 -   **エクスポート**: Markdown ファイルのダウンロード
 -   **自動保存**: ローカルストレージへの一時保存
 
@@ -123,7 +123,7 @@ It provides a modern Markdown editing experience with real-time preview, math re
 
 ### 🚧 Upcoming Features
 
--   **UI Customization**: Theme and preview style switching
+-   **UI Customization**: Theme switching
 -   **Export**: Download Markdown files
 -   **Auto-save**: Temporary save to local storage
 

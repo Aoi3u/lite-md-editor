@@ -100,20 +100,20 @@ export const TEMPLATES: TemplateItem[] = [
     {
         id: "inline-math",
         title: "Inline math",
-        description: "$...$",
-        template: "$e^{i\\pi} + 1 = 0$",
+        description: "`$...$`",
+        template: "`$e^{i\\pi} + 1 = 0$`",
     },
     {
         id: "display-math",
         title: "Display math",
-        description: "$$...$$",
-        template: "$$\n\\frac{a}{b} = c\n$$\n\n",
+        description: "```$$...$$```",
+        template: "```\n$$\n\\frac{a}{b} = c\n$$\n```\n",
     },
     {
         id: "mermaid",
         title: "Mermaid diagram",
         description: "mermaid sequence diagram",
         template:
-            "```mermaid\nsequenceDiagram\n    Alice->>Bob: Hello Bob, how are you?\n```\n\n",
+            "```mermaid\ngraph TD\nA[Start] --> B[Process]\nB --> C[End]\n```\n\n",
     },
 ];
