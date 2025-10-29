@@ -24,13 +24,9 @@ const DynamicMermaid = dynamic(() => import("./DynamicMermaid"), {
 
 interface MarkdownPreviewProps {
     html: string;
-    previewStyle: "github" | "default";
 }
 
-export default function MarkdownPreview({
-    html,
-    previewStyle,
-}: MarkdownPreviewProps) {
+export default function MarkdownPreview({ html }: MarkdownPreviewProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const rootsRef = useRef<
         Array<ReturnType<typeof import("react-dom/client").createRoot>>
@@ -193,7 +189,7 @@ export default function MarkdownPreview({
             ref={containerRef}
             className={`
                 preview-content prose prose-sm max-w-none dark:prose-invert
-                ${previewStyle === "github" ? "prose-github" : ""}
+                    /* previewStyle removed: always use default prose setup or customize globally */
                 text-slate-800 dark:text-slate-200
                 [--tw-prose-body:#0f172a] dark:[--tw-prose-body:#e5e7eb]
                 prose-pre:bg-secondary prose-code:text-accent-foreground prose-code:font-mono prose-code:text-sm

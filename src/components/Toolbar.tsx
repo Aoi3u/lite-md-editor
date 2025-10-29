@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Moon, Sun, Download, Github, FileText } from "lucide-react";
+import { Moon, Sun, Download } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 
 type ToolbarProps = {
@@ -9,7 +9,7 @@ type ToolbarProps = {
 };
 
 export default function Toolbar({ onExport }: ToolbarProps) {
-    const { theme, previewStyle, toggleTheme, setPreviewStyle } = useTheme();
+    const { theme, toggleTheme } = useTheme();
     const [exportName, setExportName] = useState<string>("document");
     const [isEditingFilename, setIsEditingFilename] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -77,25 +77,6 @@ export default function Toolbar({ onExport }: ToolbarProps) {
             </div>
 
             <div className="flex items-center gap-3">
-                <button
-                    onClick={() =>
-                        setPreviewStyle(
-                            previewStyle === "github" ? "default" : "github"
-                        )
-                    }
-                    aria-label="Toggle Preview Style"
-                    title={`Switch to ${
-                        previewStyle === "github" ? "Default" : "GitHub"
-                    } style`}
-                    className="btn"
-                >
-                    {previewStyle === "github" ? (
-                        <Github size={18} />
-                    ) : (
-                        <FileText size={18} />
-                    )}
-                </button>
-
                 <button
                     onClick={toggleTheme}
                     aria-label="Toggle theme"
