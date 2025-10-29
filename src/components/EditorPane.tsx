@@ -96,7 +96,7 @@ export default function EditorPane({
     }, [resolvedExtension, showLineNumbers]);
 
     return (
-        <div className="w-1/2 h-full overflow-hidden relative">
+        <div className="h-full overflow-hidden relative flex-1">
             <CodeMirror
                 value={value}
                 height="100%"

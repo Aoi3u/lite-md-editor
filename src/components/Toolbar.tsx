@@ -49,11 +49,9 @@ export default function Toolbar({ onExport }: ToolbarProps) {
     };
 
     return (
-        <div className="flex items-center justify-between px-4 py-2 bg-background border-b border-border shadow-sm h-14 shrink-0">
+        <div className="toolbar">
             <div className="flex items-center gap-2">
-                <span className="text-xl font-bold text-foreground tracking-tight">
-                    LiteMD
-                </span>
+                <span className="title">LiteMD</span>
             </div>
 
             <div className="flex-1 flex justify-center items-center px-4 min-w-0">
@@ -89,7 +87,7 @@ export default function Toolbar({ onExport }: ToolbarProps) {
                     title={`Switch to ${
                         previewStyle === "github" ? "Default" : "GitHub"
                     } style`}
-                    className="flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 dark:focus:ring-offset-background"
+                    className="btn"
                 >
                     {previewStyle === "github" ? (
                         <Github size={18} />
@@ -104,7 +102,7 @@ export default function Toolbar({ onExport }: ToolbarProps) {
                     title={`Switch to ${
                         theme === "dark" ? "Light" : "Dark"
                     } mode`}
-                    className="flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 dark:focus:ring-offset-background"
+                    className="btn"
                 >
                     {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
@@ -112,7 +110,7 @@ export default function Toolbar({ onExport }: ToolbarProps) {
                 <button
                     onClick={handleExport}
                     title="Export markdown (.md)"
-                    className="flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 dark:focus:ring-offset-background"
+                    className="btn"
                 >
                     <Download size={18} />
                 </button>

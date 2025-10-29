@@ -1,51 +1,69 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 @plugin "@tailwindcss/typography";
+
+/*
+    Modern / minimal global styles
+    - Uses CSS variables for theming (light/dark)
+    - Glassmorphism cards, smooth transitions, rounded corners
+    - Responsive editor/preview split layout helpers
+*/
 
 @layer base {
     :root {
-        --background: 0 0% 100%;
-        --foreground: 224 71.4% 4.1%;
-        --card: 0 0% 100%;
-        --card-foreground: 224 71.4% 4.1%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 224 71.4% 4.1%;
-        --primary: 220.9 39.3% 11%;
-        --primary-foreground: 210 20% 98%;
-        --secondary: 220 14.3% 95.9%;
-        --secondary-foreground: 220.9 39.3% 11%;
-        --muted: 220 14.3% 95.9%;
-        --muted-foreground: 220 8.9% 46.1%;
-        --accent: 220 14.3% 95.9%;
-        --accent-foreground: 220.9 39.3% 11%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 210 20% 98%;
-        --border: 220 13% 91%;
-        --input: 220 13% 91%;
-        --ring: 224 71.4% 4.1%;
-        --radius: 0.5rem;
+        /* Palette (H / S% / L%) — tuned for modern minimal look */
+        --bg-h: 220;
+        --bg-s: 20%;
+        --bg-l: 98%; /* light page */
+        --surface-h: 220;
+        --surface-s: 18%;
+        --surface-l: 100%;
+        --muted-h: 215;
+        --muted-s: 14%;
+        --muted-l: 88%;
+        --fg-h: 217;
+        --fg-s: 14%;
+        --fg-l: 12%;
+
+        --primary-h: 245;
+        --primary-s: 85%;
+        --primary-l: 60%; /* violet-accent */
+        --accent-h: 200;
+        --accent-s: 85%;
+        --accent-l: 45%; /* cyan */
+
+        --glass-alpha: 0.6;
+
+        /* Semantic tokens */
+        --background: var(--bg-h) var(--bg-s) var(--bg-l);
+        --foreground: var(--fg-h) var(--fg-s) var(--fg-l);
+        --card: 0 0% 100% / 1;
+        --card-foreground: var(--foreground);
+        --muted: var(--muted-h) var(--muted-s) var(--muted-l);
+        --border: 220 12% 92%;
+
+        --primary: var(--primary-h) var(--primary-s) var(--primary-l);
+        --accent: var(--accent-h) var(--accent-s) var(--accent-l);
+
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 18px;
+        --shadow-subtle: 0 6px 18px rgba(16, 24, 40, 0.06);
+        --shadow-elev: 0 12px 40px rgba(16, 24, 40, 0.12);
+
+        --trans-fast: 150ms;
+        --trans-md: 250ms;
     }
 
+    /* Dark override */
     .dark {
-        --background: 224 71.4% 4.1%;
-        --foreground: 210 20% 98%;
-        --card: 224 71.4% 4.1%;
-        --card-foreground: 210 20% 98%;
-        --popover: 224 71.4% 4.1%;
-        --popover-foreground: 210 20% 98%;
-        --primary: 210 20% 98%;
-        --primary-foreground: 220.9 39.3% 11%;
-        --secondary: 215 27.9% 16.9%;
-        --secondary-foreground: 210 20% 98%;
-        --muted: 215 27.9% 16.9%;
-        --muted-foreground: 217.9 10.6% 64.9%;
-        --accent: 215 27.9% 16.9%;
-        --accent-foreground: 210 20% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 210 20% 98%;
-        --border: 215 27.9% 16.9%;
-        --input: 215 27.9% 16.9%;
-        --ring: 216 12.2% 83.9%;
+        --bg-h: 222;
+        --bg-s: 10%;
+        --bg-l: 8%;
+        --muted-l: 16%;
+        --fg-l: 96%;
+        --card: 220 14% 10% / 0.9;
+        --border: 220 10% 14%;
     }
 
     html,
@@ -53,68 +71,221 @@
         height: 100%;
         margin: 0;
         padding: 0;
-        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 
     body {
-        background-color: hsl(var(--background));
+        background: linear-gradient(
+            180deg,
+            hsl(var(--bg-h) var(--bg-s) calc(var(--bg-l) - 1%)),
+            hsl(var(--bg-h) var(--bg-s) var(--bg-l)) 60%
+        );
         color: hsl(var(--foreground));
-        @apply font-sans antialiased;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+            Roboto, "Helvetica Neue", Arial;
+        font-feature-settings: "tnum" 1, "ss01" 0;
+        min-height: 100vh;
+        overflow: auto;
     }
 
     * {
         box-sizing: border-box;
     }
-}
 
-@layer components {
-    .mermaid-container svg {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .cm-scroller::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-    .cm-scroller::-webkit-scrollbar-track {
-        background-color: transparent;
-    }
-    .cm-scroller::-webkit-scrollbar-thumb {
-        background-color: hsl(var(--border));
-        border-radius: 4px;
-    }
-    .cm-scroller::-webkit-scrollbar-thumb:hover {
-        background-color: hsl(var(--muted-foreground));
+    /* App shell helpers */
+    .app-shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-rows: auto 1fr;
     }
 
-    div[class*="overflow-auto"]::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-    div[class*="overflow-auto"]::-webkit-scrollbar-track {
-        background-color: transparent;
-    }
-    div[class*="overflow-auto"]::-webkit-scrollbar-thumb {
-        background-color: hsl(var(--border));
-        border-radius: 4px;
-    }
-    div[class*="overflow-auto"]::-webkit-scrollbar-thumb:hover {
-        background-color: hsl(var(--muted-foreground));
+    /* Top toolbar (glass) */
+    .toolbar {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        padding: 0.35rem 0.75rem;
+        margin: 0.5rem 0.5rem 0.6rem;
+        border-radius: var(--radius-md);
+        background: color-mix(in srgb, hsl(var(--card)) 85%, transparent);
+        box-shadow: var(--shadow-subtle);
+        backdrop-filter: blur(6px) saturate(120%);
+        border: 1px solid hsl(var(--border));
     }
 
-    /* Ensure prose inside preview uses the project's foreground color for sufficient contrast */
+    .toolbar .title {
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin-right: auto;
+    }
+
+    .btn {
+        --btn-bg: hsl(var(--primary));
+        --btn-fg: hsl(210 20% 98%);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.45rem 0.75rem;
+        border-radius: 999px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        background: linear-gradient(
+            180deg,
+            hsl(var(--primary)) 0%,
+            color-mix(in srgb, hsl(var(--primary)) 92%, black 8%) 100%
+        );
+        color: var(--btn-fg);
+        border: none;
+        box-shadow: 0 6px 18px rgba(59, 53, 120, 0.08);
+        transition: transform var(--trans-fast) ease,
+            box-shadow var(--trans-fast) ease, opacity var(--trans-fast) ease;
+        cursor: pointer;
+    }
+
+    .btn:active {
+        transform: translateY(1px) scale(0.997);
+    }
+    .btn:focus {
+        outline: 2px solid
+            color-mix(in srgb, hsl(var(--primary)) 60%, white 40%);
+        outline-offset: 2px;
+    }
+
+    /* Main editor / preview split */
+    .editor-layout {
+        display: grid;
+        /* 3 columns: editor | divider(auto) | preview */
+        grid-template-columns: 1fr auto 1fr;
+        gap: clamp(2px, 0.2vw, 6px);
+        padding: 0.5rem;
+        align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+        .editor-layout {
+            grid-template-columns: 1fr;
+            padding: 0.5rem;
+        }
+        .toolbar {
+            margin: 0.5rem;
+        }
+    }
+
+    .pane {
+        background: color-mix(in srgb, hsl(var(--card)) 92%, transparent);
+        border-radius: var(--radius-lg);
+        padding: 0.5rem;
+        box-shadow: var(--shadow-elev);
+        border: 1px solid hsl(var(--border));
+        min-height: 64vh;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        transition: box-shadow var(--trans-md) ease,
+            transform var(--trans-md) ease;
+    }
+
+    /* divider between editor and preview */
+    .divider {
+        width: 6px;
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.04),
+            rgba(0, 0, 0, 0.02)
+        );
+        cursor: col-resize;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .divider:focus {
+        outline: 2px solid
+            color-mix(in srgb, hsl(var(--primary)) 35%, white 65%);
+        outline-offset: 2px;
+    }
+
+    .divider::before {
+        content: "";
+        width: 1px;
+        height: 28px;
+        border-radius: 2px;
+        background: rgba(16, 24, 40, 0.06);
+    }
+
+    @media (max-width: 900px) {
+        .divider {
+            display: none;
+        }
+    }
+
+    .pane:focus-within {
+        box-shadow: 0 18px 50px rgba(16, 24, 40, 0.12);
+        transform: translateY(-2px);
+    }
+
+    .pane-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-bottom: 0.25rem;
+        border-bottom: 1px solid hsl(var(--border));
+    }
+
+    /* Preview typography — ensure good contrast and readability */
     .preview-content.prose {
-        /* Use CSS color from theme tokens to match body text; important to override plugin variables */
         color: hsl(var(--foreground)) !important;
     }
-
-    /* Explicitly ensure children of prose also inherit the color */
     .preview-content.prose
         :where(p, li, span, h1, h2, h3, h4, h5, h6, a, code, pre, blockquote) {
         color: inherit !important;
     }
+
+    /* CodeMirror and scrollbars — slim and modern */
+    .cm-scroller::-webkit-scrollbar,
+    div[class*="overflow-auto"]::-webkit-scrollbar {
+        width: 9px;
+        height: 9px;
+    }
+    .cm-scroller::-webkit-scrollbar-track,
+    div[class*="overflow-auto"]::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+    .cm-scroller::-webkit-scrollbar-thumb,
+    div[class*="overflow-auto"]::-webkit-scrollbar-thumb {
+        background-color: rgba(16, 24, 40, 0.08);
+        border-radius: 999px;
+    }
+    .cm-scroller::-webkit-scrollbar-thumb:hover,
+    div[class*="overflow-auto"]::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(16, 24, 40, 0.16);
+    }
+
+    /* Mermaid SVG responsiveness */
+    .mermaid-container svg {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    /* Small utility */
+    .center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+@layer components {
 }
 
 @layer utilities {
+    /* Helpful utilities used by components */
+    .glass {
+        background: color-mix(in srgb, hsl(var(--card)) 72%, transparent);
+        backdrop-filter: blur(6px) saturate(120%);
+    }
 }
