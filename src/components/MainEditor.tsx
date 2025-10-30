@@ -160,7 +160,7 @@ export default function MainEditor() {
 
     return (
         <div className="app-shell">
-            <Toolbar onExport={exportToFile} />
+            <Toolbar value={value} onExport={exportToFile} />
 
             <CommandPalette
                 items={templates}
